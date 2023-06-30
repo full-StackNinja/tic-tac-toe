@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+     <head>
+          <meta charset="UTF-8" />
+          <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+          <title>Tic Tac Toe Game</title>
+          <link rel="stylesheet" href="./styles.css" />
+          <script src="./app.js" defer></script>
+     </head>
+     <body>
+          <div class="modal-container">
+               <div class="hide-result show-result">
+                    <div class="announce-text"></div>
+                    <button>Play Again</button>
+               </div>
+          </div>
+          <div class="stats-container">
+               <div class="player1">
+                    <div class="player-name">
+                         <span class="name">Player1:</span>
+                         (<img src="./icons/close-thick.svg" width="20px" />)
+                    </div>
+                    <span>
+                         <span class="win">Win:</span>
+                         <span class="p1 score">0</span>
+                    </span>
+               </div>
+               <div class="match-draw">
+                    <span class="tie">Tie:</span>
+                    <span class="tie-score">0</span>
+               </div>
+               <div class="player2">
+                    <div class="player-name">
+                         <span class="name">Player2:</span>
+                         (<img src="./icons/circle-outline.svg" alt="cross symbol" width="16px" />)
+                    </div>
+                    <span>
+                         <span class="win">Win:</span>
+                         <span class="p2 score">0</span>
+                    </span>
+               </div>
+          </div>
+
+          <div class="game-container">
+               <div class="board-container"></div>
+               <button id="play-game">Start Game</button>
+          </div>
+     </body>
+</html>

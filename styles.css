@@ -1,0 +1,147 @@
+* {
+     box-sizing: border-box;
+}
+@font-face {
+     font-family: Anibody;
+     src: url(./Anybody/static/Anybody_Expanded-Medium.ttf);
+}
+body {
+     padding-top: 50px;
+     position: relative;
+     background-color: #64748b;
+}
+
+.stats-container {
+     width: 600px;
+     margin: 50px auto;
+     border: 1px solid #ccc;
+     background-color: #7c2d12;
+     border-radius: 5px;
+     color: #e2e8f0;
+     font-weight: 700;
+     display: flex;
+     justify-content:space-between;
+     padding: 20px 10px;
+}
+
+.stats-container > div {
+     flex: 1 1 auto;
+}
+
+.match-draw {
+     text-align: center;
+}
+
+.player1,
+.player2 {
+     display: flex;
+     align-items: center;
+     gap: 20px;
+}
+
+.player-name{
+     display: flex;
+     align-items: center;
+}
+
+.player2 {
+     justify-content: end;
+}
+
+.game-container {
+     width: 400px;
+     height: 400px;
+     margin: auto;
+     text-align: center;
+}
+
+.board-container {
+     display: inline-grid;
+     grid-template-columns: repeat(3, 100px);
+     grid-template-rows: 100px 100px 100px;
+}
+
+.board-container > div {
+     text-align: center;
+     font-size: 4rem;
+     display: flex;
+     align-items: center;
+     justify-content: center;
+}
+
+.board-container img{
+     pointer-events: none;
+}
+
+.board-container div:nth-child(n) {
+     border-right: 5px solid;
+     border-bottom: 5px solid;
+}
+
+.board-container div:nth-child(3n) {
+     border-right: none;
+}
+
+.board-container div:nth-child(n + 7) {
+     border-bottom: none;
+}
+
+button#play-game {
+     display: block;
+     margin-top: 20px;
+     width: 130px;
+     padding: 10px;
+     background-color: #7c2d12;
+     color: #e2e8f0;
+     font-weight: 700;
+     font-size: 16px;
+     border-radius: 3px;
+     border: none;
+     margin-left: calc(50% - 60px);
+     box-shadow: 0 0 2px 2px #fb923c;
+}
+
+#play-game:hover,
+#play-game:hover {
+     box-shadow: 0 0 2px 2px #121212;
+}
+
+.modal-container {
+     display: none;
+     width: 100vw;
+     height: 100vh;
+     position: fixed;
+     z-index: 1;
+     top: 0;
+     left: 0;
+     background-color: rgba(0, 0, 0, 0.7);
+}
+
+.show-result {
+     position: absolute;
+     width: 400px;
+     height: 450px;
+     font-family: "Anibody";
+     font-size: 40px;
+     margin: 150px auto;
+     left: calc(50% - 200px);
+     background-color: #64748b;
+     color: #cfc;
+     display: flex;
+     flex-direction: column;
+     justify-content: space-around;
+     align-items: center;
+     padding: 64px 24px 24px 24px;
+     border-radius: 5px;
+}
+
+.show-result button {
+     padding: 10px 20px;
+     font-size: 24px;
+     border: 3px solid #7c2d12;
+     border-radius: 8px;
+}
+
+.announce-text {
+     flex: 1;
+}
