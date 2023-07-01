@@ -51,8 +51,14 @@ body {
 .game-container {
      width: 400px;
      height: 400px;
+     opacity: 0;
      margin: auto;
      text-align: center;
+     transition: opacity 3s linear;
+}
+
+.animate-container{
+     opacity: 1;
 }
 
 .board-container {
@@ -62,12 +68,15 @@ body {
 }
 
 .board-container > div {
+     width: 100px;
+     height: 100px;
      text-align: center;
      font-size: 4rem;
      display: flex;
      align-items: center;
      justify-content: center;
      cursor: pointer;
+     transition: width 5s, height 5s;
 }
 
 .board-container img {

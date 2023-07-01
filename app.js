@@ -1,5 +1,9 @@
+const gameContainer = document.querySelector(".game-container");
 const boardContainer = document.querySelector(".board-container");
 const playGameButton = document.querySelector("#play-game");
+document.addEventListener("DOMContentLoaded", () => {
+     gameContainer.classList.add("animate-container");
+});
 
 const gameBoard = (function () {
      let boardCellsArray = [];
@@ -177,6 +181,13 @@ const gameController = (() => {
                gameBoard.playGame();
                modalMessage.style.top = "-1000px";
           });
+          window.onclick = function (e) {
+               // console.log(e.target ===modalMessage)
+               if (e.target === modalMessage) {
+                    gameBoard.playGame();
+                    modalMessage.style.top = "-1000px";
+               }
+          };
      };
      let tie = 0;
      const updateMatchDraw = () => {
