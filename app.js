@@ -92,7 +92,7 @@ gameBoard.createBoard();
 
 const createPlayer = ({ name, markPath, alt, width }) => {
      name;
-     const mark = () => { 
+     const mark = () => {
           let markImage = document.createElement("img");
           markImage.src = markPath;
           markImage.alt = alt;
@@ -156,23 +156,26 @@ const gameController = (() => {
                if (currentPlayer.name === "p1") {
                     // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p1.score").textContent = currentPlayer.getScore();
+                    modalMessage.style.top = "0px";
+                    // modalMessage.style.pointerEvents = "all";
+                    announceText.textContent = `Player1 Won!`;
                } else if (currentPlayer.name === "p2") {
                     // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p2.score").textContent = currentPlayer.getScore();
+                    modalMessage.style.top = "0px";
+                    // modalMessage.style.pointerEvents = "all";
+                    announceText.textContent = `Player2 Won!`;
                }
-               modalMessage.style.display = "block";
-               modalMessage.style.pointerEvents = "all";
-               announceText.textContent = `${currentPlayer.name} Won the Match!`;
           } else if (result === "tie") {
                updateMatchDraw();
                document.querySelector(".tie-score").textContent = getMatchDraw();
-               modalMessage.style.display = "block";
-               modalMessage.style.pointerEvents = "all";
+               modalMessage.style.top = "0px";
+               // modalMessage.style.pointerEvents = "all";
                announceText.textContent = `Match Draw!`;
           }
           playAgain.addEventListener("click", (e) => {
                gameBoard.playGame();
-               modalMessage.style.display = "none";
+               modalMessage.style.top = "-1000px";
           });
      };
      let tie = 0;

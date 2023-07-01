@@ -109,13 +109,13 @@ button#play-game {
 }
 
 .modal-container {
-     display: none;
-     pointer-events: none;
+     display: block;
      width: 100vw;
      height: 100vh;
      position: fixed;
      z-index: 1;
-     top: 0;
+     top: -1000px;
+     transition: top 0.5s ease-in;
      left: 0;
      background-color: rgba(0, 0, 0, 0.7);
 }
@@ -125,14 +125,13 @@ button#play-game {
      width: 400px;
      height: 450px;
      font-family: "Anibody";
-     font-size: 40px;
+     font-size: 50px;
      margin: 150px auto;
      left: calc(50% - 200px);
      background-color: #64748b;
-     color: #cfc;
+     color: #450a0a;
      display: flex;
      flex-direction: column;
-     justify-content: space-around;
      align-items: center;
      padding: 64px 24px 24px 24px;
      border-radius: 5px;
@@ -146,10 +145,14 @@ button#play-game {
      cursor: pointer;
 }
 
-.show-result button:hover {
+.show-result .play-again:hover {
      box-shadow: 0 0 2px 2px;
 }
 
 .announce-text {
      flex: 1;
+     /* border: 1px solid; */
+     letter-spacing: 4px;
+     line-height: 1.5;
+     margin-left: 60px;
 }
