@@ -1,10 +1,14 @@
 const gameContainer = document.querySelector(".game-container");
 const boardContainer = document.querySelector(".board-container");
 const playGameButton = document.querySelector("#play-game");
+const displayPlayerTurn = document.querySelector(".player-turn");
+const statsContainer = document.querySelector(".stats-container");
+// Add animation to board on content load...
 document.addEventListener("DOMContentLoaded", () => {
      gameContainer.classList.add("animate-container");
 });
 
+// Create Game Board of 3 x 3
 const gameBoard = (function () {
      let boardCellsArray = [];
      const createBoard = () => {
@@ -77,6 +81,10 @@ const gameBoard = (function () {
           boardCellsArray = [];
           if (!isGameStarted) {
                isGameStarted = true;
+               statsContainer.style.opacity = "1";
+               displayPlayerTurn.style.display = "block";
+               displayPlayerTurn.style.opacity = "1";
+               displayPlayerTurn.textContent = `${gameController.initialPlayer().name} Turn`;
                boardContainer.addEventListener("click", (event) => {
                     let index;
                     let targetCell;
@@ -114,8 +122,8 @@ const createPlayer = ({ name, markPath, alt, width }) => {
 };
 const markCircle = "./icons/circle-outline.svg";
 const markCross = "./icons/close-thick.svg";
-const player1 = createPlayer({ name: "p1", markPath: markCross, alt: "cross", width: "70px" });
-const player2 = createPlayer({ name: "p2", markPath: markCircle, alt: "circle", width: "56px" });
+const player1 = createPlayer({ name: "Player1", markPath: markCross, alt: "cross", width: "70px" });
+const player2 = createPlayer({ name: "Player2", markPath: markCircle, alt: "circle", width: "56px" });
 
 const gameController = (() => {
      const initialPlayer = () => {
@@ -123,22 +131,23 @@ const gameController = (() => {
      };
      let currentPlayer = initialPlayer();
      const addContentToBoard = (index, targetCell) => {
-          console.log("cell content", targetCell.firstChild);
+          // console.log("cell content", targetCell.firstChild);
           if (targetCell.firstChild === null) {
-               console.log(`cell is empty before appending`);
+               // console.log(`cell is empty before appending`);
                // targetCell.textContent = currentPlayer.mark;
-               console.log(currentPlayer.mark());
+               // console.log(currentPlayer.mark());
                targetCell.append(currentPlayer.mark());
-               console.log(`after appending cell is ${targetCell.firstChild}`);
+               // console.log(`after appending cell is ${targetCell.firstChild}`);
                gameBoard.addCellToArray(index, currentPlayer.mark());
                let result = gameBoard.checkResult();
-               console.log("game result is", result);
+               // console.log("game result is", result);
                if (result === "tie" || result === "win") {
                     gameOver(result, currentPlayer);
                     currentPlayer = player1;
                     return 0;
                }
                currentPlayer = playerTurn(currentPlayer);
+               displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
           }
      };
      // let initialPlayer = player1;
@@ -157,13 +166,13 @@ const gameController = (() => {
           if (result === "win") {
                // console.log(`${currentPlayer.name} won the match`);
                currentPlayer.updateScore();
-               if (currentPlayer.name === "p1") {
+               if (currentPlayer.name === "Player1") {
                     // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p1.score").textContent = currentPlayer.getScore();
                     modalMessage.style.top = "0px";
                     // modalMessage.style.pointerEvents = "all";
                     announceText.textContent = `Player1 Won!`;
-               } else if (currentPlayer.name === "p2") {
+               } else if (currentPlayer.name === "Player2") {
                     // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p2.score").textContent = currentPlayer.getScore();
                     modalMessage.style.top = "0px";

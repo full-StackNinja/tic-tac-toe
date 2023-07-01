@@ -12,8 +12,9 @@ body {
 }
 
 .stats-container {
+     opacity: 0;
      width: 600px;
-     margin: 50px auto;
+     margin: 50px auto 20px auto;
      border: 1px solid #ccc;
      background-color: #7c2d12;
      border-radius: 5px;
@@ -22,6 +23,7 @@ body {
      display: flex;
      justify-content: space-between;
      padding: 20px 10px;
+     transition: opacity 0.5s ease-in;
 }
 
 .stats-container > div {
@@ -48,16 +50,34 @@ body {
      justify-content: end;
 }
 
+.player-turn {
+     display: block;
+     width: 200px;
+     height: 50px;
+     font-size: 16px;
+     font-style: italic;
+     font-weight: 700;
+     color: #e2e8f0;
+     margin: 20px auto;
+     line-height: 50px;
+     text-align: center;
+     border: 1px solid #ccc;
+     border-radius: 5px;
+     background-color: #9333ea;
+     opacity: 0;
+     transition: opacity 0.5s ease-in;
+}
+
 .game-container {
      width: 400px;
      height: 400px;
      opacity: 0;
      margin: auto;
      text-align: center;
-     transition: opacity 3s linear;
+     transition: opacity 1s linear;
 }
 
-.animate-container{
+.animate-container {
      opacity: 1;
 }
 
@@ -160,8 +180,7 @@ button#play-game {
 
 .announce-text {
      flex: 1;
-     /* border: 1px solid; */
      letter-spacing: 4px;
-     line-height: 1.5;
-     margin-left: 60px;
+     line-height: 2;
+     text-align: center;
 }
