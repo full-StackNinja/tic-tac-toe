@@ -92,7 +92,7 @@ gameBoard.createBoard();
 
 const createPlayer = ({ name, markPath, alt, width }) => {
      name;
-     const mark = () => {
+     const mark = () => { 
           let markImage = document.createElement("img");
           markImage.src = markPath;
           markImage.alt = alt;
@@ -147,8 +147,11 @@ const gameController = (() => {
           }
      };
      const gameOver = (result, currentPlayer) => {
+          let modalMessage = document.querySelector(".modal-container");
+          let announceText = document.querySelector(".announce-text");
+          const playAgain = document.querySelector(".play-again");
           if (result === "win") {
-               console.log(`${currentPlayer.name} won the match`);
+               // console.log(`${currentPlayer.name} won the match`);
                currentPlayer.updateScore();
                if (currentPlayer.name === "p1") {
                     // console.log(`current player is ${currentPlayer}`)
@@ -157,14 +160,20 @@ const gameController = (() => {
                     // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p2.score").textContent = currentPlayer.getScore();
                }
-               // console.log(`${currentPlayer.name} score is ${currentPlayer.getScore()}`)
-               // TODO :- create a modal message for winner player
+               modalMessage.style.display = "block";
+               modalMessage.style.pointerEvents = "all";
+               announceText.textContent = `${currentPlayer.name} Won the Match!`;
           } else if (result === "tie") {
                updateMatchDraw();
                document.querySelector(".tie-score").textContent = getMatchDraw();
-               // TODO :- create a modal message for tie match
-               console.log(`Tied matches are ${getMatchDraw()}`);
+               modalMessage.style.display = "block";
+               modalMessage.style.pointerEvents = "all";
+               announceText.textContent = `Match Draw!`;
           }
+          playAgain.addEventListener("click", (e) => {
+               gameBoard.playGame();
+               modalMessage.style.display = "none";
+          });
      };
      let tie = 0;
      const updateMatchDraw = () => {

@@ -20,7 +20,7 @@ body {
      color: #e2e8f0;
      font-weight: 700;
      display: flex;
-     justify-content:space-between;
+     justify-content: space-between;
      padding: 20px 10px;
 }
 
@@ -39,7 +39,7 @@ body {
      gap: 20px;
 }
 
-.player-name{
+.player-name {
      display: flex;
      align-items: center;
 }
@@ -67,9 +67,10 @@ body {
      display: flex;
      align-items: center;
      justify-content: center;
+     cursor: pointer;
 }
 
-.board-container img{
+.board-container img {
      pointer-events: none;
 }
 
@@ -99,6 +100,7 @@ button#play-game {
      border: none;
      margin-left: calc(50% - 60px);
      box-shadow: 0 0 2px 2px #fb923c;
+     cursor: pointer;
 }
 
 #play-game:hover,
@@ -108,6 +110,7 @@ button#play-game {
 
 .modal-container {
      display: none;
+     pointer-events: none;
      width: 100vw;
      height: 100vh;
      position: fixed;
@@ -140,6 +143,11 @@ button#play-game {
      font-size: 24px;
      border: 3px solid #7c2d12;
      border-radius: 8px;
+     cursor: pointer;
+}
+
+.show-result button:hover {
+     box-shadow: 0 0 2px 2px;
 }
 
 .announce-text {
