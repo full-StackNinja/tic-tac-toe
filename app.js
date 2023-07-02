@@ -7,9 +7,10 @@ const playMode = document.querySelector(".play-mode");
 playMode.onclick = function (e) {
      console.log(`Play mode button activated`, e.target);
      // let mode = getPlayMode();
-     // console.log(mode);
+     console.log(`at reset time playMode is ${gameController.getPlayMode()}`);
+     gameBoard.resetGame(gameController.getPlayMode());
      gameController.togglePlayMode();
-
+     // gameBoard.resetGame(mode);
      playMode.textContent = gameController.getPlayMode();
 };
 // Add animation to board on content load...
@@ -38,10 +39,10 @@ const gameBoard = (function () {
                boardContainer.children[i].textContent = "";
           }
      };
-     const resetGame = (mode) => {
+     const resetGame = (previousMode) => {
           resetBoard();
           boardCellsArray = [];
-          if (mode === "P VS COMP") {
+          if (previousMode === "P VS COMP") {
                player1.resetScore();
                computer.resetScore();
                gameController.resetMatchDraw();
@@ -184,19 +185,17 @@ let player2 = createPlayer({ name: "PLAYER2", markPath: markCircle, alt: "circle
 
 const gameController = (() => {
      let mode = "P VS P";
+
      const togglePlayMode = () => {
-          // Reset whole game
-          gameBoard.resetGame(mode);
-          // gameBoard.playGame();
+          currentPlayer = initialPlayer();
+          displayPlayerTurn.style.backgroundColor = "#9333ea";
+          displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
           if (mode === "P VS COMP") {
                // player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
                // player2 = createPlayer({ name: "PLAYER2", markPath: markCircle, alt: "circle", width: "56px" });
                // computer = null;
                mode = "P VS P";
           } else {
-               // player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
-               // computer = createPlayer({ name: "COMPUTER", markPath: markCircle, alt: "circle", width: "56px" });
-               // player2 = null;
                mode = "P VS COMP";
           }
      };
@@ -221,16 +220,27 @@ const gameController = (() => {
                if (result === "tie" || result === "win") {
                     gameOver(result, currentPlayer);
                     currentPlayer = player1;
+                    displayPlayerTurn.style.backgroundColor = "#9333ea";
+                    displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
                     return 0;
                }
-               if (gameController.getPlayMode() === "P VS P") {
+               if (getPlayMode() === "P VS P" && currentPlayer === player1) {
+                    currentPlayer = playerTurn(currentPlayer);
+                    displayPlayerTurn.style.backgroundColor = "#075985";
+                    displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
+               } else if (getPlayMode() === "P VS P" && currentPlayer === player2) {
+                    currentPlayer = playerTurn(currentPlayer);
+                    displayPlayerTurn.style.backgroundColor = "#9333ea";
+                    displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
+               } else if (getPlayMode() === "P VS COMP" && currentPlayer === player1) {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
-               } else if (gameController.getPlayMode() === "P VS COMP" && currentPlayer === player1) {
+                    displayPlayerTurn.style.backgroundColor = "#075985";
+                    // Play computer turn with 1sec delay...
+                    setTimeout(computer.autoPlayTurn, 1000);
+               } else if (getPlayMode() === "P VS COMP" && currentPlayer === computer) {
                     currentPlayer = playerTurn(currentPlayer);
-                    computer.autoPlayTurn();
-               } else if (gameController.getPlayMode() === "P VS COMP" && currentPlayer === computer) {
-                    currentPlayer = playerTurn(currentPlayer);
+                    displayPlayerTurn.style.backgroundColor = "#9333ea";
                     displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
                }
           }
@@ -238,9 +248,9 @@ const gameController = (() => {
      // let initialPlayer = player1;
      const playerTurn = (currentPlayer) => {
           // console.log("current player", currentPlayer);
-          if (currentPlayer === player1 && gameController.getPlayMode() === "P VS P") {
+          if (currentPlayer === player1 && getPlayMode() === "P VS P") {
                return player2;
-          } else if (currentPlayer === player1 && gameController.getPlayMode() === "P VS COMP") {
+          } else if (currentPlayer === player1 && getPlayMode() === "P VS COMP") {
                return computer;
           } else {
                return player1;
