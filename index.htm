@@ -17,7 +17,7 @@
           <div class="stats-container">
                <div class="player1">
                     <div class="player-name">
-                         <span class="name">Player1:</span>
+                         <span class="p1 name">PLAYER1:</span>
                          (<img src="./icons/close-thick.svg" width="20px" />)
                     </div>
                     <span>
@@ -26,12 +26,12 @@
                     </span>
                </div>
                <div class="match-draw">
-                    <span class="tie">Tie:</span>
+                    <span class="tie">TIE:</span>
                     <span class="tie-score">0</span>
                </div>
                <div class="player2">
                     <div class="player-name">
-                         <span class="name">Player2:</span>
+                         <span class="p2 name">PLAYER2:</span>
                          (<img src="./icons/circle-outline.svg" alt="cross symbol" width="16px" />)
                     </div>
                     <span>
@@ -43,7 +43,10 @@
           <p class="player-turn"></p>
           <div class="game-container">
                <div class="board-container"></div>
-               <button id="play-game">Start Game</button>
+               <div class="play-buttons">
+                    <button id="play-game">Start Game</button>
+                    <button class="play-mode">P VS P</button>
+               </div>
           </div>
      </body>
 </html>
