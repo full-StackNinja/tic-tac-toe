@@ -1,18 +1,18 @@
+// Accessing some required DOM elements to interact with them dynamically...
 const gameContainer = document.querySelector(".game-container");
 const boardContainer = document.querySelector(".board-container");
 const playGameButton = document.querySelector("#play-game");
 const displayPlayerTurn = document.querySelector(".player-turn");
 const statsContainer = document.querySelector(".stats-container");
 const playMode = document.querySelector(".play-mode");
+
+// Toggle and display play mode of the game...
 playMode.onclick = function (e) {
-     console.log(`Play mode button activated`, e.target);
-     // let mode = getPlayMode();
-     console.log(`at reset time playMode is ${gameController.getPlayMode()}`);
      gameBoard.resetGame(gameController.getPlayMode());
      gameController.togglePlayMode();
-     // gameBoard.resetGame(mode);
      playMode.textContent = gameController.getPlayMode();
 };
+
 // Add animation to board on content load...
 document.addEventListener("DOMContentLoaded", () => {
      gameContainer.classList.add("animate-container");
@@ -34,11 +34,13 @@ const gameBoard = (function () {
                }
           }
      };
+     // Reset board content when restarting the game or changing game play mode...
      const resetBoard = () => {
           for (let i = 0; i < boardContainer.children.length; i++) {
                boardContainer.children[i].textContent = "";
           }
      };
+     // Reset every thing including board content, players progress etc...
      const resetGame = (previousMode) => {
           resetBoard();
           boardCellsArray = [];
@@ -60,23 +62,24 @@ const gameBoard = (function () {
                document.querySelector(".p2.name").textContent = "COMPUTER";
           }
      };
+
+     // Every time a move is made by the any player, add it to the boardCellsArray...
      const addCellToArray = (index, mark) => {
-          // console.log(index, mark);
-          // console.log(boardCellsArray[index] === undefined);
           if (boardCellsArray[index] === undefined) {
                boardCellsArray[index] = mark;
-               return 0;
-          } else return "error";
-          // console.log("array elements", boardCellsArray);
+          }
      };
+     // Check to see if cell of array is empty or not before making move by the computer...
      const checkEmptyCell = (index) => {
           if (boardCellsArray[index] === undefined) return true;
           else return false;
      };
+     // Check if winning/tie conditions fulfill or not...
      const checkResult = () => {
           let cells = [...boardCellsArray];
           console.log("cells are", cells);
           console.log(`Cells are equal?`, cells[0] === cells[1]);
+          // First define winning cell indexes(i.e. consective three same moves)...
           let cellsMatchingIndices = [
                [0, 1, 2],
                [3, 4, 5],
@@ -87,8 +90,10 @@ const gameBoard = (function () {
                [0, 4, 8],
                [2, 4, 6],
           ];
+          // Then make check on them one by one...
           for (matchArray of cellsMatchingIndices) {
                let tempArray = [];
+               // First check that whether three winning slots are filled or not...
                for (cell of matchArray) {
                     if (cells[cell] === undefined) {
                          break;
@@ -96,12 +101,14 @@ const gameBoard = (function () {
                          tempArray.push(cells[cell]);
                     }
                }
+               // If all the three slots of any winning combination are filled then check whether they are by same player?
                if (tempArray.length === 3) {
                     if (tempArray[0].alt === tempArray[1].alt && tempArray[1].alt === tempArray[2].alt) {
                          return "win";
                     }
                }
           }
+          // If no winning combination found and every slot has been filled then the game is "tied" otherwise continue...
           if (cells.length === 9) {
                for (cell of cells) {
                     if (cell === undefined) return "incomplete";
@@ -112,6 +119,7 @@ const gameBoard = (function () {
           }
      };
      let isGameStarted = false;
+     // Start the game with empty board every time it is called...
      const playGame = () => {
           resetBoard();
           boardCellsArray = [];
@@ -135,8 +143,10 @@ const gameBoard = (function () {
      return { resetGame, createBoard, resetBoard, playGame, addCellToArray, checkResult, checkEmptyCell };
 })();
 
+// Initially at game page load create and display the board...
 gameBoard.createBoard();
 
+// Create players for the game...
 const createPlayer = ({ name, markPath, alt, width }) => {
      name;
      const mark = () => {
@@ -160,40 +170,32 @@ const createPlayer = ({ name, markPath, alt, width }) => {
 };
 const markCircle = "./icons/circle-outline.svg";
 const markCross = "./icons/close-thick.svg";
+
+// In case of player vs computer mode create computer player module and inherit properties and methods from create player factory function...
 const computer = (function () {
      const { name, mark, updateScore, getScore, resetScore } = createPlayer({ name: "COMPUTER", markPath: markCircle, alt: "circle", width: "56px" });
+     // Method to play turn by the computer in "P  VS COMP" mode
      const autoPlayTurn = () => {
           let randomTurn = Math.floor(Math.random() * 9);
-
-          // console.log(`cell array is ${gameBoard.boardCellsArray}`);
-          // console.log(`cell at random turn ${randomTurn} is ${gameBoard.boardCellsArray[randomTurn]}`);
           while (gameBoard.checkEmptyCell(randomTurn) === false) {
                randomTurn = Math.floor(Math.random() * 9);
           }
-          console.log("random turn", randomTurn);
-          // gameBoard.boardCellsArray[randomTurn] = computer.mark();
-          // boardContainer.children[randomTurn].append(computer.mark());
           gameController.addContentToBoard(randomTurn, boardContainer.children[randomTurn]);
      };
-
      return { name, mark, updateScore, getScore, resetScore, autoPlayTurn };
 })();
-// console.log(computer);
+
+// Create two players...
 let player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
 let player2 = createPlayer({ name: "PLAYER2", markPath: markCircle, alt: "circle", width: "56px" });
-// let computer = createPlayer({ name: "COMPUTER", markPath: markCircle, alt: "circle", width: "56px" });
 
 const gameController = (() => {
      let mode = "P VS P";
-
      const togglePlayMode = () => {
           currentPlayer = initialPlayer();
           displayPlayerTurn.style.backgroundColor = "#9333ea";
           displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
           if (mode === "P VS COMP") {
-               // player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
-               // player2 = createPlayer({ name: "PLAYER2", markPath: markCircle, alt: "circle", width: "56px" });
-               // computer = null;
                mode = "P VS P";
           } else {
                mode = "P VS COMP";
@@ -206,17 +208,12 @@ const gameController = (() => {
           return player1;
      };
      let currentPlayer = initialPlayer();
+     // When turn is played by any player then add respective content to the game board...
      const addContentToBoard = (index, targetCell) => {
-          // console.log("cell content", targetCell.firstChild);
           if (targetCell.firstChild === null) {
-               // console.log(`cell is empty before appending`);
-               // targetCell.textContent = currentPlayer.mark;
-               // console.log(currentPlayer.mark());
                targetCell.append(currentPlayer.mark());
-               // console.log(`after appending cell is ${targetCell.firstChild}`);
                gameBoard.addCellToArray(index, currentPlayer.mark());
                let result = gameBoard.checkResult();
-               // console.log("game result is", result);
                if (result === "tie" || result === "win") {
                     gameOver(result, currentPlayer);
                     currentPlayer = player1;
@@ -224,6 +221,7 @@ const gameController = (() => {
                     displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
                     return 0;
                }
+               // Here currentPlayer is the previous player who has already made the move...
                if (getPlayMode() === "P VS P" && currentPlayer === player1) {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.style.backgroundColor = "#075985";
@@ -245,48 +243,39 @@ const gameController = (() => {
                }
           }
      };
-     // let initialPlayer = player1;
-     const playerTurn = (currentPlayer) => {
-          // console.log("current player", currentPlayer);
-          if (currentPlayer === player1 && getPlayMode() === "P VS P") {
+     const playerTurn = (previousPlayer) => {
+          if (previousPlayer === player1 && getPlayMode() === "P VS P") {
                return player2;
-          } else if (currentPlayer === player1 && getPlayMode() === "P VS COMP") {
+          } else if (previousPlayer === player1 && getPlayMode() === "P VS COMP") {
                return computer;
           } else {
                return player1;
           }
      };
+     // Display the game result in case of game over(winning/tie) situation...
      const gameOver = (result, currentPlayer) => {
           let modalMessage = document.querySelector(".modal-container");
           let announceText = document.querySelector(".announce-text");
           const playAgain = document.querySelector(".play-again");
           if (result === "win") {
-               // console.log(`${currentPlayer.name} won the match`);
                currentPlayer.updateScore();
                if (currentPlayer.name === "PLAYER1") {
-                    // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p1.score").textContent = currentPlayer.getScore();
                     modalMessage.style.top = "0px";
-                    // modalMessage.style.pointerEvents = "all";
                     announceText.textContent = `PLAYER1 WON!`;
                } else if (currentPlayer.name === "PLAYER2") {
-                    // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p2.score").textContent = currentPlayer.getScore();
                     modalMessage.style.top = "0px";
-                    // modalMessage.style.pointerEvents = "all";
                     announceText.textContent = `PLAYER2 WON!`;
                } else if (currentPlayer.name === "COMPUTER") {
-                    // console.log(`current player is ${currentPlayer}`)
                     document.querySelector(".p2.score").textContent = currentPlayer.getScore();
                     modalMessage.style.top = "0px";
-                    // modalMessage.style.pointerEvents = "all";
                     announceText.textContent = `COMPUTER WON!`;
                }
           } else if (result === "tie") {
                updateMatchDraw();
                document.querySelector(".tie-score").textContent = getMatchDraw();
                modalMessage.style.top = "0px";
-               // modalMessage.style.pointerEvents = "all";
                announceText.textContent = `Match Draw!`;
           }
           playAgain.addEventListener("click", (e) => {
@@ -294,7 +283,6 @@ const gameController = (() => {
                modalMessage.style.top = "-1000px";
           });
           window.onclick = function (e) {
-               // console.log(e.target ===modalMessage)
                if (e.target === modalMessage) {
                     gameBoard.playGame();
                     modalMessage.style.top = "-1000px";
@@ -313,8 +301,7 @@ const gameController = (() => {
      };
      return { togglePlayMode, getPlayMode, addContentToBoard, gameOver, updateMatchDraw, getMatchDraw, initialPlayer, playerTurn, resetMatchDraw };
 })();
-
-// console.log(gameController.playerTurn(player2))
+// Add event listener to the "Start Game" button...
 playGameButton.addEventListener("click", (e) => {
      gameBoard.playGame();
      playGameButton.textContent = "Restart Game";
