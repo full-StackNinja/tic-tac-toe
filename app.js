@@ -20,7 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Create Game Board of 3 x 3
 const gameBoard = (function () {
-     let boardCellsArray = [];
+     let boardCellsArray = Array(9);
      const createBoard = () => {
           let cellNumber = 0;
           for (let i = 0; i < 3; i++) {
@@ -43,7 +43,7 @@ const gameBoard = (function () {
      // Reset every thing including board content, players progress etc...
      const resetGame = (previousMode) => {
           resetBoard();
-          boardCellsArray = [];
+          boardCellsArray = Array(9);
           if (previousMode === "P VS COMP") {
                player1.resetScore();
                computer.resetScore();
@@ -69,6 +69,19 @@ const gameBoard = (function () {
                boardCellsArray[index] = mark;
           }
      };
+
+     const getCurrentBoardState = function () {
+          let currentBoardState = [];
+          for (let i = 0; i < boardCellsArray.length; i++) {
+               if (boardCellsArray[i] === undefined) {
+                    currentBoardState[i] = i;
+               } else {
+                    currentBoardState[i] = boardCellsArray[i];
+               }
+          }
+          return currentBoardState;
+     };
+
      // Check to see if cell of array is empty or not before making move by the computer...
      const checkEmptyCell = (index) => {
           if (boardCellsArray[index] === undefined) return true;
@@ -77,10 +90,8 @@ const gameBoard = (function () {
      // Check if winning/tie conditions fulfill or not...
      const checkResult = () => {
           let cells = [...boardCellsArray];
-          console.log("cells are", cells);
-          console.log(`Cells are equal?`, cells[0] === cells[1]);
           // First define winning cell indexes(i.e. consective three same moves)...
-          let cellsMatchingIndices = [
+          let winningCombos = [
                [0, 1, 2],
                [3, 4, 5],
                [6, 7, 8],
@@ -91,7 +102,7 @@ const gameBoard = (function () {
                [2, 4, 6],
           ];
           // Then make check on them one by one...
-          for (matchArray of cellsMatchingIndices) {
+          for (matchArray of winningCombos) {
                let tempArray = [];
                // First check that whether three winning slots are filled or not...
                for (cell of matchArray) {
@@ -122,7 +133,7 @@ const gameBoard = (function () {
      // Start the game with empty board every time it is called...
      const playGame = () => {
           resetBoard();
-          boardCellsArray = [];
+          boardCellsArray = Array(9);
           if (!isGameStarted) {
                isGameStarted = true;
                statsContainer.style.opacity = "1";
@@ -140,7 +151,7 @@ const gameBoard = (function () {
           }
      };
 
-     return { resetGame, createBoard, resetBoard, playGame, addCellToArray, checkResult, checkEmptyCell };
+     return { resetGame, createBoard, resetBoard, playGame, addCellToArray, checkResult, checkEmptyCell, getCurrentBoardState };
 })();
 
 // Initially at game page load create and display the board...
@@ -174,17 +185,125 @@ const markCross = "./icons/close-thick.svg";
 // In case of player vs computer mode create computer player module and inherit properties and methods from create player factory function...
 const computer = (function () {
      const { name, mark, updateScore, getScore, resetScore } = createPlayer({ name: "COMPUTER", markPath: markCircle, alt: "circle", width: "56px" });
-     // Method to play turn by the computer in "P  VS COMP" mode
-     const autoPlayTurn = () => {
-          let randomTurn = Math.floor(Math.random() * 9);
-          while (gameBoard.checkEmptyCell(randomTurn) === false) {
-               randomTurn = Math.floor(Math.random() * 9);
+     const isWinnerFound = function (currentBoardState, currentMark) {
+          let winningCombos = [
+               [0, 1, 2],
+               [3, 4, 5],
+               [6, 7, 8],
+               [0, 3, 6],
+               [1, 4, 7],
+               [2, 5, 8],
+               [0, 4, 8],
+               [2, 4, 6],
+          ];
+          // Then make check on them one by one...
+          for (matchArray of winningCombos) {
+               let tempArray = [];
+               // First check that whether three winning slots are filled or not...
+               for (cell of matchArray) {
+                    if (currentBoardState[cell] === undefined) {
+                         break;
+                    } else {
+                         tempArray.push(currentBoardState[cell]);
+                    }
+               }
+               // If all the three slots of any winning combination are filled then check whether they are by same player?
+               if (tempArray.length === 3) {
+                    if (tempArray[0].alt === tempArray[1].alt && tempArray[1].alt === tempArray[2].alt && tempArray[0].alt === currentMark) {
+                         return true;
+                    }
+               }
           }
-          gameController.addContentToBoard(randomTurn, boardContainer.children[randomTurn]);
+          return false;
      };
-     return { name, mark, updateScore, getScore, resetScore, autoPlayTurn };
-})();
+     const getEmptyCells = function (currentBoardState) {
+          let emptyCellsArray = [];
+          for (let i = 0; i < currentBoardState.length; i++) {
+               if (typeof currentBoardState[i] === "number") {
+                    emptyCellsArray.push(i);
+               }
+          }
+          return emptyCellsArray;
+     };
+     const minMax = function (newBoardState, currentMark, depth) {
+          let availableEmptySlots = getEmptyCells(newBoardState);
+          if (isWinnerFound(newBoardState, aiMarkName)) {
+               return 10 - depth;
+          } else if (isWinnerFound(newBoardState, playerMarkName)) {
+               return -10 + depth;
+          } else if (availableEmptySlots.length === 0) {
+               return 0;
+          }
+          if (currentMark.alt === "circle") {
+               currentMark = player1.mark();
+          } else {
+               currentMark = computer.mark();
+          }
+          let maxScore = -Infinity;
+          let minScore = Infinity;
+          let score;
+          for (let i = 0; i < availableEmptySlots.length; i++) {
+               depth++;
+               let subBoardState = [...newBoardState];
 
+               subBoardState[availableEmptySlots[i]] = currentMark;
+
+               let result = minMax(subBoardState, currentMark, depth);
+
+               if (currentMark.alt === "circle") {
+                    if (result > maxScore) {
+                         maxScore = result;
+                         score = maxScore;
+                    }
+               } else if (currentMark.alt === "cross") {
+                    if (result < minScore) {
+                         minScore = result;
+                         score = minScore;
+                    }
+               }
+          }
+          return score;
+     };
+     const playerMarkName = "cross";
+     const aiMarkName = "circle";
+     // Store all tests infos to find optimal turn...
+     let allTestsInfo = [];
+     // Method to play turn by the computer in "P  VS COMP" mode...
+     const autoPlayTurn = () => {
+          let currentMark = computer.mark();
+          // Receive current board state to decide optimal turn...
+          let currentBoardState = gameBoard.getCurrentBoardState();
+          // Which slots are empty?
+          let availableEmptySlots = getEmptyCells(currentBoardState);
+          // run test for each empty slot to find maximum score...
+          for (let i = 0; i < availableEmptySlots.length; i++) {
+               let currentTestInfo = {};
+               let depth = 0;
+               let newBoardState = [...currentBoardState];
+               newBoardState[availableEmptySlots[i]] = currentMark;
+               currentTestInfo.index = availableEmptySlots[i];
+               currentTestInfo.markName = currentMark.alt;
+               // Apply minMax function after filling every possible slot to check winning condition and to find optimal turn...
+               currentTestInfo.score = minMax(newBoardState, currentMark, depth);
+               allTestsInfo.push(currentTestInfo);
+          }
+          // After performing all tests, get the optimum index based on the score...
+          let bestScore = -Infinity;
+          let bestIndex;
+          for (let test of allTestsInfo) {
+               if (test.score > bestScore) {
+                    bestScore = test.score;
+                    bestIndex = test.index;
+               }
+          }
+          // Reset tests info after finding best index...
+          allTestsInfo = [];
+          setTimeout(() => {
+               gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
+          }, 1000);
+     };
+     return { name, mark, updateScore, getScore, resetScore, autoPlayTurn, getEmptyCells };
+})();
 // Create two players...
 let player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
 let player2 = createPlayer({ name: "PLAYER2", markPath: markCircle, alt: "circle", width: "56px" });
@@ -209,10 +328,13 @@ const gameController = (() => {
      };
      let currentPlayer = initialPlayer();
      // When turn is played by any player then add respective content to the game board...
+     // let totalTurns = 0;
      const addContentToBoard = (index, targetCell) => {
+          // totalTurns++;
           if (targetCell.firstChild === null) {
                targetCell.append(currentPlayer.mark());
                gameBoard.addCellToArray(index, currentPlayer.mark());
+               // Check the game over condition...
                let result = gameBoard.checkResult();
                if (result === "tie" || result === "win") {
                     gameOver(result, currentPlayer);
@@ -234,8 +356,8 @@ const gameController = (() => {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
                     displayPlayerTurn.style.backgroundColor = "#075985";
-                    // Play computer turn with 1sec delay...
-                    setTimeout(computer.autoPlayTurn, 1000);
+                    // Play computer's optimal turn...
+                    computer.autoPlayTurn();
                } else if (getPlayMode() === "P VS COMP" && currentPlayer === computer) {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.style.backgroundColor = "#9333ea";

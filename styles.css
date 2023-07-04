@@ -11,6 +11,16 @@ body {
      background-color: #64748b;
 }
 
+h1{
+     width: 600px;
+     text-align: center;
+     color: #2c2528;
+     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+     border-bottom: 5px solid #082f49;
+     font-size: 48px;
+     margin: auto;
+}
+
 .stats-container {
      opacity: 0;
      width: 600px;
