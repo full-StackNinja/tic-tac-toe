@@ -225,12 +225,12 @@ const computer = (function () {
           }
           return emptyCellsArray;
      };
-     const minMax = function (newBoardState, currentMark, depth) {
+     const minMax = function (newBoardState, currentMark) {
           let availableEmptySlots = getEmptyCells(newBoardState);
           if (isWinnerFound(newBoardState, aiMarkName)) {
-               return 10 - depth;
+               return 10;
           } else if (isWinnerFound(newBoardState, playerMarkName)) {
-               return -10 + depth;
+               return -10;
           } else if (availableEmptySlots.length === 0) {
                return 0;
           }
@@ -243,12 +243,11 @@ const computer = (function () {
           let minScore = Infinity;
           let score;
           for (let i = 0; i < availableEmptySlots.length; i++) {
-               depth++;
                let subBoardState = [...newBoardState];
 
                subBoardState[availableEmptySlots[i]] = currentMark;
 
-               let result = minMax(subBoardState, currentMark, depth);
+               let result = minMax(subBoardState, currentMark);
 
                if (currentMark.alt === "circle") {
                     if (result > maxScore) {
@@ -278,13 +277,12 @@ const computer = (function () {
           // run test for each empty slot to find maximum score...
           for (let i = 0; i < availableEmptySlots.length; i++) {
                let currentTestInfo = {};
-               let depth = 0;
                let newBoardState = [...currentBoardState];
                newBoardState[availableEmptySlots[i]] = currentMark;
                currentTestInfo.index = availableEmptySlots[i];
                currentTestInfo.markName = currentMark.alt;
                // Apply minMax function after filling every possible slot to check winning condition and to find optimal turn...
-               currentTestInfo.score = minMax(newBoardState, currentMark, depth);
+               currentTestInfo.score = minMax(newBoardState, currentMark);
                allTestsInfo.push(currentTestInfo);
           }
           // After performing all tests, get the optimum index based on the score...
@@ -298,9 +296,10 @@ const computer = (function () {
           }
           // Reset tests info after finding best index...
           allTestsInfo = [];
-          setTimeout(() => {
-               gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
-          }, 1000);
+          gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
+          // setTimeout(() => {
+          //      gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
+          // }, 1000);
      };
      return { name, mark, updateScore, getScore, resetScore, autoPlayTurn, getEmptyCells };
 })();
