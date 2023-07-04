@@ -43,6 +43,7 @@ const gameBoard = (function () {
      // Reset every thing including board content, players progress etc...
      const resetGame = (previousMode) => {
           resetBoard();
+          computer.resetFirstMove();
           boardCellsArray = Array(9);
           if (previousMode === "P VS COMP") {
                player1.resetScore();
@@ -132,6 +133,7 @@ const gameBoard = (function () {
      let isGameStarted = false;
      // Start the game with empty board every time it is called...
      const playGame = () => {
+          computer.resetFirstMove();
           resetBoard();
           boardCellsArray = Array(9);
           if (!isGameStarted) {
@@ -225,6 +227,23 @@ const computer = (function () {
           }
           return emptyCellsArray;
      };
+     let isFirstMovePlayed = false;
+     const setFirstMove = () => {
+          isFirstMovePlayed = true;
+     };
+     const resetFirstMove = () => {
+          isFirstMovePlayed = false;
+     };
+     const playFirstMove = function () {
+          if (gameBoard.checkEmptyCell(4)) {
+               gameController.addContentToBoard(4, boardContainer.children[4]);
+          } else {
+               gameController.addContentToBoard(0, boardContainer.children[0]);
+          }
+     };
+     const checkFirstMove = () => {
+          return isFirstMovePlayed;
+     };
      const minMax = function (newBoardState, currentMark) {
           let availableEmptySlots = getEmptyCells(newBoardState);
           if (isWinnerFound(newBoardState, aiMarkName)) {
@@ -281,10 +300,12 @@ const computer = (function () {
                newBoardState[availableEmptySlots[i]] = currentMark;
                currentTestInfo.index = availableEmptySlots[i];
                currentTestInfo.markName = currentMark.alt;
+
                // Apply minMax function after filling every possible slot to check winning condition and to find optimal turn...
                currentTestInfo.score = minMax(newBoardState, currentMark);
                allTestsInfo.push(currentTestInfo);
           }
+
           // After performing all tests, get the optimum index based on the score...
           let bestScore = -Infinity;
           let bestIndex;
@@ -296,12 +317,11 @@ const computer = (function () {
           }
           // Reset tests info after finding best index...
           allTestsInfo = [];
-          gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
-          // setTimeout(() => {
-          //      gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
-          // }, 1000);
+          if (checkFirstMove()) {
+               gameController.addContentToBoard(bestIndex, boardContainer.children[bestIndex]);
+          }
      };
-     return { name, mark, updateScore, getScore, resetScore, autoPlayTurn, getEmptyCells };
+     return { name, mark, updateScore, getScore, resetScore, autoPlayTurn, getEmptyCells, playFirstMove, checkFirstMove, setFirstMove, resetFirstMove };
 })();
 // Create two players...
 let player1 = createPlayer({ name: "PLAYER1", markPath: markCross, alt: "cross", width: "70px" });
@@ -326,10 +346,9 @@ const gameController = (() => {
           return player1;
      };
      let currentPlayer = initialPlayer();
-     // When turn is played by any player then add respective content to the game board...
-     // let totalTurns = 0;
+     // When turn is played by any player then add respective player mark to the game board...
+
      const addContentToBoard = (index, targetCell) => {
-          // totalTurns++;
           if (targetCell.firstChild === null) {
                targetCell.append(currentPlayer.mark());
                gameBoard.addCellToArray(index, currentPlayer.mark());
@@ -355,8 +374,15 @@ const gameController = (() => {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.textContent = `${currentPlayer.name} Turn`;
                     displayPlayerTurn.style.backgroundColor = "#075985";
+
                     // Play computer's optimal turn...
+
+                    if (!computer.checkFirstMove()) {
+                         computer.playFirstMove();
+                    }
+
                     computer.autoPlayTurn();
+                    computer.setFirstMove();
                } else if (getPlayMode() === "P VS COMP" && currentPlayer === computer) {
                     currentPlayer = playerTurn(currentPlayer);
                     displayPlayerTurn.style.backgroundColor = "#9333ea";
