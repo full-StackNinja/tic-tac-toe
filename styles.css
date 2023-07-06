@@ -1,5 +1,7 @@
 * {
      box-sizing: border-box;
+     font-size: 16px;
+     font-family: "Times New Roman", Times, serif;
 }
 @font-face {
      font-family: Anibody;
@@ -11,11 +13,11 @@ body {
      background-color: #64748b;
 }
 
-h1{
+h1 {
      width: 600px;
      text-align: center;
      color: #2c2528;
-     font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+     font-family: "Trebuchet MS", "Lucida Sans Unicode", "Lucida Grande", "Lucida Sans", Arial, sans-serif;
      border-bottom: 5px solid #082f49;
      font-size: 48px;
      margin: auto;
@@ -29,6 +31,8 @@ h1{
      background-color: #7c2d12;
      border-radius: 5px;
      color: #e2e8f0;
+     font-size: 16px;
+     font-family: "Times New Roman", Times, serif;
      font-weight: 700;
      display: flex;
      justify-content: space-between;
