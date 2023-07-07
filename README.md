@@ -20,8 +20,17 @@
        <img src="./icons/hand-pointing-right.svg" alt="Hand pointing right" style="width: 70px;">
        <a href="https://full-stackninja.github.io/tic-tac-toe/">Play Game Here</a>
      </div> -->
-     | <img src="./icons/hand-pointing-right.svg" alt="Hand pointing right" width="70px"> | <span style="font-size: 40px"> [Play Game Here](https://full-stackninja.github.io/tic-tac-toe/) </span> |
-     | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+     <style>
+       table {
+         border-collapse: collapse;
+       }
+       table td {
+         border: none;
+       }
+     </style>
+
+| <img src="./icons/hand-pointing-right.svg" alt="Hand pointing right" width="70px"> | <span style="font-size: 32px;">[Play Game Here](https://full-stackninja.github.io/tic-tac-toe/)</span> |
+| ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
 
 # Screen Shot:
 
