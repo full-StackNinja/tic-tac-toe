@@ -17,7 +17,7 @@
 -    AI is built using famous [minmax algorithm](https://en.wikipedia.org/wiki/Minimax) to make it unbeatable.
      <div style="display: flex; gap: 20px; align-items: center;
      font-size: 40px">
-       <img src="./icons/hand-pointing-right.svg" alt="Hand pointing right" style="width: 70px; display:block;">
+       <img src="./icons/hand-pointing-right.svg" alt="Hand pointing right" style="width: 30px; display:block;">
        <a href="https://full-stackninja.github.io/tic-tac-toe/" style="display: block; font-size: 30px">Play Game Here</a>
      </div>
 
